@@ -1,5 +1,24 @@
 # Sales Analysis by RFM Model
 
+**📚 Table of Contents**
+- [🎯 Objective](#-objective)
+- [📊 Data Source](#-data-source)
+- [🔄 Project Stages](#-project-stages)
+- [🎨 Design & Mockup](#-design--mockup)
+- [🛠 Tools](#-tools)
+- [💻 Development & Pseudocode](#-development--pseudocode)
+- [🔍 Data Exploration & Testing](#-data-exploration--testing)
+- [🧼 Data Cleaning](#-data-cleaning)
+- [🔧 Data Transformation](#-data-transformation)
+- [🧱 Create the SQL View](#-create-the-sql-view)
+- [✅ Data Quality Tests](#-data-quality-tests)
+- [📊 Visualization Highlights](#-visualization-highlights)
+- [📈 Results & DAX Measures](#-results--dax-measures)
+- [🔎 Analysis & Findings](#-analysis--findings)
+- [📌 Recommendations](#-recommendations)
+- [📚 Potential Actions](#-potential-actions)
+- [✅ Conclusion](#-conclusion)
+
 
 **🎯 Objective**  
 To analyze customer behavior using the RFM (Recency - Frequency - Monetary) model to identify high-value, at-risk, and potentially loyal customers, and recommend strategic actions for retention and revenue growth.
