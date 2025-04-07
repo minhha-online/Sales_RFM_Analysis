@@ -1,4 +1,4 @@
-# Sales_RFM_Analysis
+# Sales Analysis by RFM Model
 
 
 **🎯 Objective**  
