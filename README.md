@@ -1,5 +1,6 @@
 # Sales_RFM_Analysis
 
+
 **🎯 Objective**  
 To analyze customer behavior using the RFM (Recency - Frequency - Monetary) model to identify high-value, at-risk, and potentially loyal customers, and recommend strategic actions for retention and revenue growth.
 
@@ -103,3 +104,19 @@ quartiles AS (
 
 **✅ Conclusion**  
 This project demonstrates a full-cycle data analytics process: data cleaning, SQL-based analysis, business insight discovery, and compelling dashboard creation. RFM modeling proves effective in guiding customer relationship strategies and can be adapted for any CRM or e-commerce platform.
+
+**📊 Power BI Dashboard Design:**
+
+This dashboard was built in **Sales_project.pbix**, reflecting a customer segmentation approach using the RFM model. The key visuals and layout include:
+
+- **KPI Cards**: Displaying Total Revenue, Total Customers, VIP Customers, and Lost Customers
+- **Pie Chart**: Shows customer segmentation by `RFM_LEVEL`
+- **Bar Charts**: Distribution of scores for Recency, Frequency, and Monetary
+- **Table**: Top 10 high-value customers sorted by spending
+- **Slicer Panel**: Allows filtering by RFM Level or individual scores
+- **Conditional Formatting**: Highlights high-spending customers and RFM dynamics
+- **Layout**: Horizontally grouped insights for score distribution, customer segments, and detailed breakdown
+
+The visual styling was intentionally kept clean and professional, with intuitive color coding for groups like VIP, At Risk, and Big Spenders.
+
+📁 File: `Sales_project.pbix`
