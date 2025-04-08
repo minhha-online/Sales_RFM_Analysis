@@ -1,38 +1,17 @@
 
 # Sales Analysis by RFM Model
 
-
-## 🔍 Answering Business Questions through Power BI
-
-Using the final Power BI dashboard, we address the key analytical questions defined earlier:
-
-| ❓ Business Question | 💡 Insight from Power BI |
-|----------------------|--------------------------|
-| **1. Who are the most valuable customers?** | The *Top 10 Customers* table shows that clients like **Euro Shopping Channel** and **Mini Gifts Distributors Ltd.** contribute the highest revenue (over $1.2M combined). Their RFM Level is classified as **VIP**. |
-| **2. Which customers are at risk of churning?** | The segment with `R_SCORE = 1` and high F/M values appears under the **At Risk** group. Pie charts reveal this group accounts for approximately **12% of all customers**. |
-| **3. What is the distribution of customer behavior?** | The **R, F, M bar charts** show that most customers have **low frequency** and **moderate monetary** values, highlighting uneven engagement. |
-| **4. How can we prioritize retention strategies?** | **Big Spenders** and **Potential Loyalists** (e.g., R=4, M=4, F=1–2) show strong potential for upselling and loyalty campaigns. This insight drives marketing prioritization. |
-| **5. Are there any unexpected patterns in behavior?** | Customers in the **Others** segment occasionally show high recency spikes despite low F/M. These are **early signs of potential reactivation or new interest**. |
-
-These insights connect the dashboard to real business actions, demonstrating the value of data-driven decision-making.
-
-**📚 Table of Contents**
+# Table of Contents
 - [Objective](#objective)
 - [Data Source](#data-source)
 - [Project Stages](#project-stages)
 - [Design & Mockup](#design--mockup)
 - [Tools](#tools)
-- [Development & Pseudocode](#development--pseudocode)
-- [Data Exploration & Testing](#data-exploration--testing)
-- [Data Cleaning](#data-cleaning)
-- [Data Transformation](#data-transformation)
-- [Create the SQL View](#create-the-sql-view)
-- [Data Quality Tests](#data-quality-tests)
-- [Visualization Highlights](#visualization-highlights)
-- [Results & DAX Measures](#results--dax-measures)
-- [Analysis & Findings](#analysis--findings)
-- [Recommendations](#recommendations)
-- [Potential Actions](#potential-actions)
+- [Data Exploration](#development--pseudocode)
+- [Data Cleaning & Preparation](#data-cleaning--testing)
+- [RFM Modeling with SQL Server](#rfm-modeling-with-sql-server)
+- [Power BI Dashboard Development](#power-bi-dashboard-development)
+- [Insight Extraction & Recommendations](#insight-extraction--recommendations)
 - [Conclusion](#conclusion)
 
 
@@ -76,7 +55,7 @@ To uncover meaningful insights from customer transaction data, this project aims
 5. **Are there any unexpected patterns in spending behavior?**
    - Analyze anomalies or opportunities within "Others" or low-F score groups.
 
-Power BI dashboard layout includes:
+**Power BI dashboard layout includes:**
 - KPI Cards (Total Customers, Revenue, VIPs, Lost Customers)
 - Pie Chart (Customer segmentation by RFM_LEVEL)
 - Bar Charts (R, F, M Score distributions)
@@ -189,10 +168,14 @@ Key Columns Used in This Project:
 - Verified revenue field (`ACTUAL_SALES`)
 - Trusted input for all downstream SQL and visualization tasks
 
-# 2. RFM Modeling with SQL Server
+# 3. RFM Modeling with SQL Server
 
-**Objective**
-Build a robust RFM model using SQL to segment customers by Recency, Frequency, and Monetary behavior, enabling business insight and targeting strategy.
+**Purpose**
+
+To group customers based on their behavior using three core metrics:
+- **Recency**: How recently a customer placed an order
+- **Frequency**: How often they purchased
+- **Monetary**: How much they spent
 
 ---
 
@@ -203,7 +186,7 @@ Build a robust RFM model using SQL to segment customers by Recency, Frequency, a
 WITH rfm_base AS (
   SELECT 
     CUSTOMERNAME,
-    DATEDIFF(DAY, MAX(ORDERDATE), '2005-06-01') AS Recency,
+    DATEDIFF(DAY, MAX(ORDERDATE), (SELECT MAX(ORDERDATE) FROM sales_data)) AS Recency,
     COUNT(DISTINCT ORDERNUMBER) AS Frequency,
     ROUND(SUM(ACTUAL_SALES), 2) AS Monetary
   FROM sales_data
@@ -215,9 +198,16 @@ WITH rfm_base AS (
 ```sql
 , quartiles AS (
   SELECT
-    PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY Recency) OVER () AS R25,
-    PERCENTILE_CONT(0.75) ... AS R75,
-    ...
+         DISTINCT
+         PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY recency) OVER() AS r_25,
+         PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY recency) OVER() AS r_50,
+         PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY recency) OVER() AS r_75,
+			PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY frequency) OVER() AS f_25,
+			PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY frequency) OVER() AS f_50,
+			PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY frequency) OVER() AS f_75,
+			PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY monetary) OVER() AS m_25,
+			PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY monetary) OVER() AS m_50,
+			PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY monetary) OVER() AS m_75
   FROM rfm_base
 )
 ```
@@ -226,10 +216,31 @@ WITH rfm_base AS (
 ```sql
 , rfm_scored AS (
   SELECT r.*,
-    CASE WHEN Recency <= q.R25 THEN 4 ... ELSE 1 END AS R_SCORE,
-    CASE WHEN Frequency <= q.F25 THEN 1 ... ELSE 4 END AS F_SCORE,
-    CASE WHEN Monetary <= q.M25 THEN 1 ... ELSE 4 END AS M_SCORE
-  FROM rfm_base r CROSS JOIN quartiles q
+         -- R_Score: Recency smaller is better
+		   CASE
+			   WHEN r.recency <= q.r_25 THEN 4
+			   WHEN r.recency <= q.r_50 THEN 3
+			   WHEN r.recency <= q.r_75 THEN 2
+			ELSE 1
+		   END AS R_Score,
+
+		   -- F_Score: Frequency bigger is better
+		   CASE
+			   WHEN r.frequency <= q.f_25 THEN 1
+			   WHEN r.frequency <= q.f_50 THEN 2
+			   WHEN r.frequency <= q.f_75 THEN 3
+			   ELSE 4
+		   END AS F_Score,
+
+   		-- M_Score: Monetary bigger is better
+   		CASE
+   			WHEN r.monetary <= q.m_25 THEN 1
+   			WHEN r.monetary <= q.m_50 THEN 2
+   			WHEN r.monetary <= q.m_75 THEN 3
+   			ELSE 4
+   		END AS M_Score
+    FROM rfm_base r
+   CROSS JOIN quartiles q
 )
 ```
 
@@ -250,7 +261,7 @@ WITH rfm_base AS (
 ```
 
 ***5. Export to New Table***
-```sql
+```sql3
 SELECT * INTO rfm_results FROM rfm_final;
 ```
 
@@ -263,3 +274,116 @@ SELECT * INTO rfm_results FROM rfm_final;
   - Behavior segment: `RFM_LEVEL`
 
 This structured output feeds directly into Power BI for interactive analysis.
+
+---
+
+# 4. Power BI Dashboard Development  
+After preparing the `rfm_results` table in SQL, exported it as a `.csv` and loaded it into Power BI to design an interactive dashboard. This dashboard enables clear customer segmentation and supports business decision-making.
+
+---
+
+**Objective**
+
+- Visualize RFM scores and levels to understand customer behavior
+- Track key metrics (revenue, VIPs, customer distribution)
+- Enable filtering and slicing for deeper insight exploration
+
+---
+
+**Visualization Results
+
+![GIF of Power BI Dashboard](assets/images/powerbi_dashboard.png)
+
+**DAX Measures Created**
+
+```DAX
+Total Customers = DISTINCTCOUNT(rfm_results[CUSTOMERNAME])
+Total Revenue = SUM(rfm_results[Monetary])
+VIP Customers = CALCULATE(COUNTROWS(rfm_results), rfm_results[RFM_LEVEL] = "VIP")
+Lost Customers = CALCULATE(COUNTROWS(rfm_results), rfm_results[RFM_LEVEL] = "Lost")
+Top Customer = CALCULATE(MAX(rfm_results[Monetary]))
+```
+
+These measures were used in KPI Cards and visual breakdowns.
+
+---
+
+**Dashboard Components**
+
+| Element           | Type           | Purpose                                         |
+|------------------|----------------|-------------------------------------------------|
+| KPI Cards         | Numeric Tiles  | Show Total Customers, Revenue, VIPs, Lost       |
+| Pie Chart         | Donut Visual   | RFM_LEVEL Distribution                          |
+| Bar Charts        | Clustered Bars | Distribution of R, F, and M Scores              |
+| Table             | Matrix Table   | Top customers with RFM_SCORE and Monetary       |
+| Slicers           | Filter widgets | Filter dashboard by RFM_LEVEL and RFM_SCORE     |
+
+---
+
+**Visual Design Considerations**
+
+- Color-coded RFM levels for better segmentation visibility
+- Conditional formatting in tables (e.g., high monetary in darker color)
+- Slicers placed at top-right for quick filtering
+- Grouped visuals for comparative storytelling (e.g., Score charts side-by-side)
+
+---
+
+**Dashboard Layout**
+
+- Header row: KPI Cards
+- Middle row: Pie chart + Score Bar Charts
+- Bottom row: Detailed Table with slicers
+- 
+---
+
+**Outcome**
+
+- Highly interactive dashboard with multiple exploration paths
+- Supports decision-making for marketing & retention
+- Prepares the ground for strategy formulation based on customer value
+
+# 5. Insight Extraction & Recommendations
+
+**Answering Business Questions through Power BI**
+
+Using the final Power BI dashboard, address the key analytical questions defined earlier:
+
+| ❓ Business Question | 💡 Insight from Power BI |
+|----------------------|--------------------------|
+| **1. Who are the most valuable customers?** | The *Top 10 Customers* table shows that clients like **Euro Shopping Channel** and **Mini Gifts Distributors Ltd.** contribute the highest revenue (over $1.2M combined). Their RFM Level is classified as **VIP**. |
+| **2. Which customers are at risk of churning?** | The segment with `R_SCORE = 1` and high F/M values appears under the **At Risk** group. Pie charts reveal this group accounts for approximately **12% of all customers**. |
+| **3. What is the distribution of customer behavior?** | The **R, F, M bar charts** show that most customers have **low frequency** and **moderate monetary** values, highlighting uneven engagement. |
+| **4. How can we prioritize retention strategies?** | **Big Spenders** and **Potential Loyalists** (e.g., R=4, M=4, F=1–2) show strong potential for upselling and loyalty campaigns. This insight drives marketing prioritization. |
+| **5. Are there any unexpected patterns in behavior?** | Customers in the **Others** segment occasionally show high recency spikes despite low F/M. These are **early signs of potential reactivation or new interest**. |
+
+These insights connect the dashboard to real business actions, demonstrating the value of data-driven decision-making.
+
+**Recommendations**
+
+Based on the RFM segmentation and dashboard insights, we suggest the following data-driven actions:
+
+- **VIP Customers** (High RFM):  
+  Offer exclusive membership tiers, early access to new products, and priority support. These customers are already loyal and profitable—focus on deepening the relationship and maximizing lifetime value.
+
+- **Big Spenders** (High Monetary, Low Frequency):  
+  Trigger personalized cross-sell and up-sell campaigns. While these customers spend a lot per order, they buy infrequently. Time-limited bundles or loyalty points can drive more frequent purchases.
+
+- **Potential Loyalists** (High Recency, Moderate Frequency/Monetary):  
+  Build onboarding journeys, post-purchase touchpoints, and personalized engagement. These are promising customers who could become VIPs if nurtured correctly.
+
+- **At Risk** (Low Recency, High Frequency or Monetary):  
+  Run win-back campaigns with reminders, feedback requests, and targeted promotions. These customers were previously valuable but have recently disengaged.
+
+- **Lost Customers** (Low RFM):  
+  Launch remarketing ads or dormant customer surveys. Offer comeback vouchers but allocate minimal budget—these users are low-return and should not be over-invested in.
+
+---
+
+# Conclusion
+
+This project demonstrates a complete analytics workflow: from cleaning raw sales data to segmenting customers with SQL and presenting business insights via Power BI.
+
+We not only delivered a functional RFM model, but also translated the output into **actionable strategies** that align with marketing, CRM, and customer retention goals.
+
+By combining analytical rigor with business relevance, this project shows how data can empower smarter decision-making and stronger customer relationships.
