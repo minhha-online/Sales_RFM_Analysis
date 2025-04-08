@@ -1,5 +1,5 @@
 
-# Sales Analysis by RFM Model
+# Customer Segmentation with RFM Analysis 
 
 ![gif-animation](assets/images/data_inform_illustration_animation.gif)
 
