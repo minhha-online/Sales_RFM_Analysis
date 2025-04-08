@@ -1,6 +1,10 @@
 
 # Sales Analysis by RFM Model
 
+![gif-animation](assets/images/gif_animate.gif)
+
+
+
 # Table of Contents
 - [Objective](#objective)
 - [Data Source](#data-source)
