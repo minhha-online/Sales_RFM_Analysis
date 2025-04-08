@@ -312,16 +312,33 @@ After preparing the `rfm_results` table in SQL, exported it as a `.csv` and load
 
 ## Visualization Results
 
-![Power BI Dashboard](assets/images/powerbi_dashboard.png)
+![Power BI Dashboard](assets/images/powerbi_dashboard.pdf)
 
 ## DAX Measures Created
 
+**Total Customers Measure**
 ```DAX
 Total Customers = DISTINCTCOUNT(rfm_results[CUSTOMERNAME])
+```
+**Total Revenue Measure**
+```DAX
 Total Revenue = SUM(rfm_results[Monetary])
-VIP Customers = CALCULATE(COUNTROWS(rfm_results), rfm_results[RFM_LEVEL] = "VIP")
-Lost Customers = CALCULATE(COUNTROWS(rfm_results), rfm_results[RFM_LEVEL] = "Lost")
-Top Customer = CALCULATE(MAX(rfm_results[Monetary]))
+```
+**VIP Customers Measure**
+```DAX
+VIP CUSTOMER = CALCULATE(DISTINCTCOUNT(rfm_results[CUSTOMERNAME]), rfm_results[RFM_LEVEL] = "VIP")
+```
+**AtRisk - Lost Customers Measure**
+```DAX
+AtRisk - loss = CALCULATE(DISTINCTCOUNT(rfm_results[CUSTOMERNAME]),rfm_results[RFM_LEVEL] IN {"At risk", "Lost"})
+```
+**Top Customer Measure**	
+```DAX
+Top Customer Name = 
+CALCULATE(
+    SELECTEDVALUE(rfm_results[CUSTOMERNAME]),
+    TOPN(1, rfm_results, rfm_results[Monetary], DESC)
+)
 ```
 
 These measures were used in KPI Cards and visual breakdowns.
@@ -370,7 +387,7 @@ Using the final Power BI dashboard, address the key analytical questions defined
 
 |  Business Question |  Insight from Power BI |
 |----------------------|--------------------------|
-| **1. Who are the most valuable customers?** | The *Top 10 Customers* table shows that clients like **Euro Shopping Channel** and **Mini Gifts Distributors Ltd.** contribute the highest revenue (over $1.2M combined). Their RFM Level is classified as **VIP**. |
+| **1. Who are the most valuable customers?** | The *Top Spending Customers* table shows that clients like **Euro Shopping Channel** and **Mini Gifts Distributors Ltd.** contribute the highest revenue (over $1.2M combined). Their RFM Level is classified as **VIP**. |
 | **2. Which customers are at risk of churning?** | The segment with `R_SCORE = 1` and high F/M values appears under the **At Risk** group. Pie charts reveal this group accounts for approximately **12% of all customers**. |
 | **3. What is the distribution of customer behavior?** | The **R, F, M bar charts** show that most customers have **low frequency** and **moderate monetary** values, highlighting uneven engagement. |
 | **4. How can we prioritize retention strategies?** | **Big Spenders** and **Potential Loyalists** (e.g., R=4, M=4, F=1–2) show strong potential for upselling and loyalty campaigns. This insight drives marketing prioritization. |
