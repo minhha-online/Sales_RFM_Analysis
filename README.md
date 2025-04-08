@@ -75,7 +75,7 @@ This project showcases the integration of four essential tools in the data analy
 Each tool was used for what it does best—Excel for data prep, SQL for logic-heavy modeling, Power BI for visual storytelling, and GitHub for version control and public visibility.
 
 
-# 1. Data Exploration
+# Data Exploration
 
 Before diving into modeling, it's essential to explore the raw dataset
 **Dataset Overview**
@@ -100,7 +100,7 @@ Before diving into modeling, it's essential to explore the raw dataset
 
 This exploration guided our decisions in the cleaning stage and ensured the focus remained on columns relevant to customer-level behavior modeling.
 
-# 2. **Data Cleaning & Preparation (Excel)**  
+# Data Cleaning & Preparation (Excel)  
 **Objective**
 - Clean and standardize raw Kaggle dataset
 - Identify and resolve revenue inconsistencies
@@ -168,7 +168,7 @@ Key Columns Used in This Project:
 - Verified revenue field (`ACTUAL_SALES`)
 - Trusted input for all downstream SQL and visualization tasks
 
-# 3. RFM Modeling with SQL Server
+# RFM Modeling with SQL Server
 
 **Purpose**
 
@@ -277,7 +277,7 @@ This structured output feeds directly into Power BI for interactive analysis.
 
 ---
 
-# 4. Power BI Dashboard Development  
+# Power BI Dashboard Development  
 After preparing the `rfm_results` table in SQL, exported it as a `.csv` and loaded it into Power BI to design an interactive dashboard. This dashboard enables clear customer segmentation and supports business decision-making.
 
 ---
@@ -343,7 +343,7 @@ These measures were used in KPI Cards and visual breakdowns.
 - Supports decision-making for marketing & retention
 - Prepares the ground for strategy formulation based on customer value
 
-# 5. Insight Extraction & Recommendations
+# Insight Extraction & Recommendations
 
 **Answering Business Questions through Power BI**
 
