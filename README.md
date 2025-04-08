@@ -1,7 +1,7 @@
 
 # Sales Analysis by RFM Model
 
-![gif-animation](assets/images/gif_animate.gif)
+![gif-animation](assets/images/data_inform_illustration_animation.gif)
 
 
 
