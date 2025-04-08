@@ -42,7 +42,7 @@ This project covers the complete data analytics process:
 - Recommending targeted CRM and marketing actions based on data
 
 # Data Source  
-- **Dataset**: Sales transaction data sourced from [Kaggle](https://www.kaggle.com/)
+- **Dataset**: Sales transaction data sourced from [Kaggle](https://www.kaggle.com/datasets/kyanyoga/sample-sales-data)
 
 The dataset reflects simulated global sales activity and serves as a rich source for behavioral segmentation using the RFM model.
 
