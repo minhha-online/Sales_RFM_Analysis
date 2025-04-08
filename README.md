@@ -310,7 +310,7 @@ After preparing the `rfm_results` table in SQL, exported it as a `.csv` and load
 
 ## Visualization Results
 
-![GIF of Power BI Dashboard](assets/images/powerbi_dashboard.png)
+![Power BI Dashboard](assets/images/powerbi_dashboard.png)
 
 ## DAX Measures Created
 
