@@ -290,6 +290,7 @@ SELECT * INTO rfm_results FROM rfm_final;
   - RFM metrics and scores
   - Composite `RFM_SCORE`
   - Behavior segment: `RFM_LEVEL`
+[sql output](assets/images/sql_output.png)
 
 This structured output feeds directly into Power BI for interactive analysis.
 
