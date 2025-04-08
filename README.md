@@ -7,11 +7,24 @@
 - [Project Stages](#project-stages)
 - [Design & Mockup](#design--mockup)
 - [Tools](#tools)
-- [Data Exploration](#data-exploration)
-- [Data Cleaning & Preparation](#data-cleaning--preparation)
+- [Data Exploration](#development--pseudocode)
+- [Data Cleaning & Preparation](#data-cleaning--testing)
+  -[Objective](#Objective)
+  -[Detecting Data Issues](#detecting-data-issues)
+  -[Dropping Irrelevant Columns](#dropping-irrelevant-columns)
+  -[Processing Steps in Excel](#processing-steps-in-excel)
+  -[Output](#Output)
 - [RFM Modeling with SQL Server](#rfm-modeling-with-sql-server)
+  -[Purpose](#purpose)
+  -[Key Steps](#key-steps)
+  -[Output](#output)
 - [Power BI Dashboard Development](#power-bi-dashboard-development)
+  -[Objective](#objective)
+  -[DAX Measures Created](#dax-measures-created)
+  -[Dashboard Component](#dashboard-component)
 - [Insight Extraction & Recommendations](#insight-extraction--recommendations)
+  -[Findings](#findings)
+  -[Recommendations](#recommendations)
 - [Conclusion](#conclusion)
 
 
@@ -101,14 +114,15 @@ Before diving into modeling, it's essential to explore the raw dataset
 This exploration guided our decisions in the cleaning stage and ensured the focus remained on columns relevant to customer-level behavior modeling.
 
 # Data Cleaning & Preparation (Excel)  
-**Objective**
+
+## Objective
 - Clean and standardize raw Kaggle dataset
 - Identify and resolve revenue inconsistencies
 - Remove columns not serving behavioral analysis
 - Prepare dataset for SQL-based segmentation
 
 ---
-**Detecting Data Issues**
+## Detecting Data Issues
 
 Upon initial inspection, the dataset contained a `SALES` column, representing line-level revenue. However, when we validated it against the actual logic:
 
@@ -122,7 +136,7 @@ ACTUAL_SALES = PRICEEACH * QUANTITYORDERED
 
 ---
 
-**Dropping Irrelevant Columns**
+## Dropping Irrelevant Columns
 
 Out of 25 columns in the original dataset, only around 8–9 were required for RFM analysis. We removed the following:
 
@@ -148,7 +162,7 @@ Key Columns Used in This Project:
 
 ---
 
-**Processing Steps in Excel**
+## Processing Steps in Excel
 
 | Step | Action                              | Description |
 |------|-------------------------------------|-------------|
@@ -162,7 +176,7 @@ Key Columns Used in This Project:
 
 ---
 
-**Output**
+## Output
 
 - Clean, complete, and analysis-ready dataset
 - Verified revenue field (`ACTUAL_SALES`)
@@ -170,7 +184,7 @@ Key Columns Used in This Project:
 
 # RFM Modeling with SQL Server
 
-**Purpose**
+## Purpose 
 
 To group customers based on their behavior using three core metrics:
 - **Recency**: How recently a customer placed an order
@@ -179,7 +193,7 @@ To group customers based on their behavior using three core metrics:
 
 ---
 
-**Key Steps**
+## Key Steps
 
 ***1. Aggregate RFM Metrics***
 ```sql
@@ -267,7 +281,7 @@ SELECT * INTO rfm_results FROM rfm_final;
 
 ---
 
-**Output**
+## Output
 - Table `rfm_results` contains:
   - RFM metrics and scores
   - Composite `RFM_SCORE`
@@ -282,7 +296,7 @@ After preparing the `rfm_results` table in SQL, exported it as a `.csv` and load
 
 ---
 
-**Objective**
+## Objective
 
 - Visualize RFM scores and levels to understand customer behavior
 - Track key metrics (revenue, VIPs, customer distribution)
@@ -290,11 +304,11 @@ After preparing the `rfm_results` table in SQL, exported it as a `.csv` and load
 
 ---
 
-**Visualization Results
+## Visualization Results
 
 ![GIF of Power BI Dashboard](assets/images/powerbi_dashboard.png)
 
-**DAX Measures Created**
+## DAX Measures Created
 
 ```DAX
 Total Customers = DISTINCTCOUNT(rfm_results[CUSTOMERNAME])
@@ -308,7 +322,7 @@ These measures were used in KPI Cards and visual breakdowns.
 
 ---
 
-**Dashboard Components**
+## Dashboard Components
 
 | Element           | Type           | Purpose                                         |
 |------------------|----------------|-------------------------------------------------|
@@ -345,11 +359,11 @@ These measures were used in KPI Cards and visual breakdowns.
 
 # Insight Extraction & Recommendations
 
-**Answering Business Questions through Power BI**
+## Findings
 
 Using the final Power BI dashboard, address the key analytical questions defined earlier:
 
-| ❓ Business Question | 💡 Insight from Power BI |
+|  Business Question |  Insight from Power BI |
 |----------------------|--------------------------|
 | **1. Who are the most valuable customers?** | The *Top 10 Customers* table shows that clients like **Euro Shopping Channel** and **Mini Gifts Distributors Ltd.** contribute the highest revenue (over $1.2M combined). Their RFM Level is classified as **VIP**. |
 | **2. Which customers are at risk of churning?** | The segment with `R_SCORE = 1` and high F/M values appears under the **At Risk** group. Pie charts reveal this group accounts for approximately **12% of all customers**. |
@@ -359,7 +373,7 @@ Using the final Power BI dashboard, address the key analytical questions defined
 
 These insights connect the dashboard to real business actions, demonstrating the value of data-driven decision-making.
 
-**Recommendations**
+## Recommendations
 
 Based on the RFM segmentation and dashboard insights, we suggest the following data-driven actions:
 
