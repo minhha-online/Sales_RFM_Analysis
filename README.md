@@ -25,7 +25,7 @@
 - [Power BI Dashboard Development](#power-bi-dashboard-development)
   - [Objective](#objective)
   - [DAX Measures Created](#dax-measures-created)
-  - [Dashboard Component](#dashboard-component)
+  - [Dashboard Component](#dashboard-components)
 - [Insight Extraction & Recommendations](#insight-extraction--recommendations)
   - [Findings](#findings)
   - [Recommendations](#recommendations)
@@ -352,7 +352,6 @@ These measures were used in KPI Cards and visual breakdowns.
 - Header row: KPI Cards
 - Middle row: Pie chart + Score Bar Charts
 - Bottom row: Detailed Table with slicers
-- 
 ---
 
 **Outcome**
