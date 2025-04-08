@@ -1,5 +1,20 @@
 # Sales Analysis by RFM Model
 
+
+## 🔍 Answering Business Questions through Power BI
+
+Using the final Power BI dashboard, we address the key analytical questions defined earlier:
+
+| ❓ Business Question | 💡 Insight from Power BI |
+|----------------------|--------------------------|
+| **1. Who are the most valuable customers?** | The *Top 10 Customers* table shows that clients like **Euro Shopping Channel** and **Mini Gifts Distributors Ltd.** contribute the highest revenue (over $1.2M combined). Their RFM Level is classified as **VIP**. |
+| **2. Which customers are at risk of churning?** | The segment with `R_SCORE = 1` and high F/M values appears under the **At Risk** group. Pie charts reveal this group accounts for approximately **12% of all customers**. |
+| **3. What is the distribution of customer behavior?** | The **R, F, M bar charts** show that most customers have **low frequency** and **moderate monetary** values, highlighting uneven engagement. |
+| **4. How can we prioritize retention strategies?** | **Big Spenders** and **Potential Loyalists** (e.g., R=4, M=4, F=1–2) show strong potential for upselling and loyalty campaigns. This insight drives marketing prioritization. |
+| **5. Are there any unexpected patterns in behavior?** | Customers in the **Others** segment occasionally show high recency spikes despite low F/M. These are **early signs of potential reactivation or new interest**. |
+
+These insights connect the dashboard to real business actions, demonstrating the value of data-driven decision-making.
+
 **📚 Table of Contents**
 - [Objective](#objective)
 - [📊 Data Source](#data-source)
