@@ -82,7 +82,7 @@ Power BI dashboard layout includes:
 - Table (Top 10 high-spending customers)
 - Slicers (By RFM Level, Score)
 
-**🛠 Tools**  
+# Tools  
 This project showcases the integration of four essential tools in the data analytics pipeline:
 
 | Tool                 | Purpose                                                                 |
@@ -186,3 +186,78 @@ Out of 25 columns in the original dataset, only around 8–9 were required for R
 - Clean, complete, and analysis-ready dataset
 - Verified revenue field (`ACTUAL_SALES`)
 - Trusted input for all downstream SQL and visualization tasks
+
+# 2. RFM Modeling with SQL Server
+
+**Objective**
+Build a robust RFM model using SQL to segment customers by Recency, Frequency, and Monetary behavior, enabling business insight and targeting strategy.
+
+---
+
+**Key Steps**
+
+***1. Aggregate RFM Metrics***
+```sql
+WITH rfm_base AS (
+  SELECT 
+    CUSTOMERNAME,
+    DATEDIFF(DAY, MAX(ORDERDATE), '2005-06-01') AS Recency,
+    COUNT(DISTINCT ORDERNUMBER) AS Frequency,
+    ROUND(SUM(ACTUAL_SALES), 2) AS Monetary
+  FROM sales_data
+  GROUP BY CUSTOMERNAME
+)
+```
+
+***2. Calculate Quartile Thresholds***
+```sql
+, quartiles AS (
+  SELECT
+    PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY Recency) OVER () AS R25,
+    PERCENTILE_CONT(0.75) ... AS R75,
+    ...
+  FROM rfm_base
+)
+```
+
+***3. Assign R, F, M Scores (1 to 4)***
+```sql
+, rfm_scored AS (
+  SELECT r.*,
+    CASE WHEN Recency <= q.R25 THEN 4 ... ELSE 1 END AS R_SCORE,
+    CASE WHEN Frequency <= q.F25 THEN 1 ... ELSE 4 END AS F_SCORE,
+    CASE WHEN Monetary <= q.M25 THEN 1 ... ELSE 4 END AS M_SCORE
+  FROM rfm_base r CROSS JOIN quartiles q
+)
+```
+
+***4. Generate Final RFM Table***
+```sql
+, rfm_final AS (
+  SELECT *,
+    CAST(R_SCORE AS VARCHAR) + CAST(F_SCORE AS VARCHAR) + CAST(M_SCORE AS VARCHAR) AS RFM_SCORE,
+    CASE 
+      WHEN R_SCORE=4 AND F_SCORE=4 AND M_SCORE=4 THEN 'VIP'
+      WHEN R_SCORE=4 AND F_SCORE<=2 THEN 'Big Spender'
+      WHEN R_SCORE=1 AND F_SCORE>=3 THEN 'At Risk'
+      WHEN R_SCORE=1 AND F_SCORE=1 THEN 'Lost'
+      ELSE 'Others'
+    END AS RFM_LEVEL
+  FROM rfm_scored
+)
+```
+
+***5. Export to New Table***
+```sql
+SELECT * INTO rfm_results FROM rfm_final;
+```
+
+---
+
+**Output**
+- Table `rfm_results` contains:
+  - RFM metrics and scores
+  - Composite `RFM_SCORE`
+  - Behavior segment: `RFM_LEVEL`
+
+This structured output feeds directly into Power BI for interactive analysis.
