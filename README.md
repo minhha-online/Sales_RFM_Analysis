@@ -1,3 +1,4 @@
+
 # Sales Analysis by RFM Model
 
 
@@ -141,6 +142,7 @@ ACTUAL_SALES = PRICEEACH * QUANTITYORDERED
 **Decision**: Discarded the unreliable `SALES` column and created a new, trusted column `ACTUAL_SALES` to ensure accurate analysis.
 
 ---
+
 **Dropping Irrelevant Columns**
 
 Out of 25 columns in the original dataset, only around 8–9 were required for RFM analysis. We removed the following:
@@ -152,7 +154,7 @@ Out of 25 columns in the original dataset, only around 8–9 were required for R
 | Order Management    | STATUS, ORDERLINENUMBER, QTR_ID, MONTH_ID, YEAR_ID | Duplicates ORDERDATE or metadata        |
 | Product Segments    | PRODUCTLINE, MSRP, DEALSIZE, TERRITORY           | Not required for customer-level RFM     |
 
-- Key Columns Used in This Project:
+Key Columns Used in This Project:
 | Column         | Description                                      |
 |----------------|--------------------------------------------------|
 | ORDERNUMBER    | Unique identifier for each order                 |
@@ -167,7 +169,7 @@ Out of 25 columns in the original dataset, only around 8–9 were required for R
 
 ---
 
-** Processing Steps in Excel**
+**Processing Steps in Excel**
 
 | Step | Action                              | Description |
 |------|-------------------------------------|-------------|
