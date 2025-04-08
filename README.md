@@ -17,41 +17,64 @@ These insights connect the dashboard to real business actions, demonstrating the
 
 **📚 Table of Contents**
 - [Objective](#objective)
-- [📊 Data Source](#data-source)
-- [🔄 Project Stages](#project-stages)
-- [🎨 Design & Mockup](#design--mockup)
-- [🛠 Tools](#tools)
-- [💻 Development & Pseudocode](#development--pseudocode)
-- [🔍 Data Exploration & Testing](#data-exploration--testing)
-- [🧼 Data Cleaning](#data-cleaning)
-- [🔧 Data Transformation](#data-transformation)
-- [🧱 Create the SQL View](#create-the-sql-view)
-- [✅ Data Quality Tests](#data-quality-tests)
-- [📊 Visualization Highlights](#visualization-highlights)
-- [📈 Results & DAX Measures](#results--dax-measures)
-- [🔎 Analysis & Findings](#analysis--findings)
-- [📌 Recommendations](#recommendations)
-- [📚 Potential Actions](#potential-actions)
-- [✅ Conclusion](#conclusion)
+- [Data Source](#data-source)
+- [Project Stages](#project-stages)
+- [Design & Mockup](#design--mockup)
+- [Tools](#tools)
+- [Development & Pseudocode](#development--pseudocode)
+- [Data Exploration & Testing](#data-exploration--testing)
+- [Data Cleaning](#data-cleaning)
+- [Data Transformation](#data-transformation)
+- [Create the SQL View](#create-the-sql-view)
+- [Data Quality Tests](#data-quality-tests)
+- [Visualization Highlights](#visualization-highlights)
+- [Results & DAX Measures](#results--dax-measures)
+- [Analysis & Findings](#analysis--findings)
+- [Recommendations](#recommendations)
+- [Potential Actions](#potential-actions)
+- [Conclusion](#conclusion)
 
 
 # Objective  
-To analyze customer behavior using the RFM (Recency - Frequency - Monetary) model to identify high-value, at-risk, and potentially loyal customers, and recommend strategic actions for retention and revenue growth.
+The goal of this project is to perform a full-cycle customer analytics pipeline using real-world transactional sales data. By applying the RFM (Recency, Frequency, Monetary) model, we segment customers based on their purchasing behavior and translate those insights into actionable business strategies.
 
-**📊 Data Source**  
-- File: `sales_data.csv` from a real-world sales system  
-- 2,823 transaction records, 92 unique customers  
-- Key fields: ORDERNUMBER, ORDERDATE, PRODUCTCODE, QUANTITYORDERED, PRICEEACH, CUSTOMERNAME, POSTALCODE, etc.
+This project covers the complete data analytics process:
+- Cleaning and transforming raw sales data using Excel  
+- Modeling and segmenting customers with SQL-based RFM scoring  
+- Designing an interactive Power BI dashboard to uncover insights  
+- Recommending targeted CRM and marketing actions based on data
 
-**🔄 Project Stages**  
-1. Data Exploration  
-2. Data Cleaning & Transformation  
-3. RFM Analysis via SQL  
-4. Data Quality Testing  
-5. Visualization in Power BI  
-6. Analysis, Insights, and Business Recommendations
+# Data Source  
+- **Dataset**: Sales transaction data sourced from [Kaggle](https://www.kaggle.com/)
 
-**🎨 Design & Mockup**  
+The dataset reflects simulated global sales activity and serves as a rich source for behavioral segmentation using the RFM model.
+
+# Project Stages    
+1. **Data Exploration**  
+2. **Data Cleaning & Preparation (Excel)**  
+3. **RFM Modeling with SQL Server**  
+4. **Power BI Dashboard Development**  
+5. **Insight Extraction & Recommendations**  
+6. **Project Documentation**  
+
+# Design & Mockup  
+To uncover meaningful insights from customer transaction data, this project aims to answer the following key questions:
+
+1. **Who are the most valuable customers?**
+   - Identify top spenders and VIP customers using RFM segmentation.
+
+2. **Which customers are at risk of churning?**
+   - Detect customers with high Frequency/Monetary but low Recency.
+
+3. **What is the distribution of customer behavior?**
+   - Segment customers by RFM score and level (e.g., Lost, Loyal, Potential).
+
+4. **How can we prioritize retention and marketing strategies?**
+   - Recommend actions based on customer value and risk level.
+
+5. **Are there any unexpected patterns in spending behavior?**
+   - Analyze anomalies or opportunities within "Others" or low-F score groups.
+
 Power BI dashboard layout includes:
 - KPI Cards (Total Customers, Revenue, VIPs, Lost Customers)
 - Pie Chart (Customer segmentation by RFM_LEVEL)
@@ -60,97 +83,106 @@ Power BI dashboard layout includes:
 - Slicers (By RFM Level, Score)
 
 **🛠 Tools**  
-- **Excel**: Initial cleaning and calculated columns  
-- **Microsoft SQL Server**: RFM scoring logic via SQL  
-- **Power BI**: Interactive visualizations and DAX
+This project showcases the integration of four essential tools in the data analytics pipeline:
 
-**💻 Development & Pseudocode**  
-- Calculate Recency: `DATEDIFF` between last order date and reference date  
-- Frequency: Count of unique orders per customer  
-- Monetary: Sum of actual sales = `PRICEEACH * QUANTITYORDERED`
-- Use `PERCENTILE_CONT` to assign quartile-based RFM scores (1 to 4)
-- Concatenate RFM scores to form `RFM_SCORE` and classify into `RFM_LEVEL`
+| Tool                 | Purpose                                                                 |
+|----------------------|-------------------------------------------------------------------------|
+| **Microsoft Excel**      | Data cleaning, transformation, and initial validation. Created `ACTUAL_SALES`, standardized date formats, and handled missing values. |
+| **Microsoft SQL Server**| Built the entire RFM segmentation model using CTEs and percentile logic. Demonstrated advanced SQL capabilities including conditional scoring and customer segmentation. |
+| **Power BI**             | Developed an interactive dashboard with KPI Cards, score distribution, segmentation visuals, and customer-level insights. Integrated DAX measures and slicers for user exploration. |
+| **GitHub**               | Hosted the full project documentation, code versioning, and README-based walkthrough for public portfolio showcasing. |
 
-**🔍 Data Exploration & Testing**  
-- No duplicate `ORDERNUMBER + PRODUCTCODE`  
-- Missing `POSTALCODE` handled manually in Excel  
-- Verified `ACTUAL_SALES` matches `PRICEEACH * QUANTITYORDERED`
+Each tool was used for what it does best—Excel for data prep, SQL for logic-heavy modeling, Power BI for visual storytelling, and GitHub for version control and public visibility.
 
-**🧼 Data Cleaning**  
-- Dropped irrelevant fields (PHONE, STATE, TERRITORY, etc.)  
-- Standardized date format for ORDERDATE  
-- Rounded monetary values to 2 decimal places
 
-**🔧 Data Transformation**  
-- Added new column: `ACTUAL_SALES`  
-- Ensured `POSTALCODE` is text format
+# 1. Data Exploration
 
-**🧱 Create the SQL View**  
-```sql
--- Step 1: Aggregate RFM values
-WITH rfm_base AS (
-  SELECT CUSTOMERNAME,
-         DATEDIFF(DAY, MAX(ORDERDATE), '2005-06-01') AS Recency,
-         COUNT(DISTINCT ORDERNUMBER) AS Frequency,
-         ROUND(SUM(PRICEEACH * QUANTITYORDERED), 2) AS Monetary
-  FROM sales_data
-  GROUP BY CUSTOMERNAME
-),
--- Step 2: Quartile thresholds
-quartiles AS (
-  SELECT ... PERCENTILE_CONT OVER() ... 
-),
--- Step 3: Assign R, F, M scores using CASE WHEN
--- Step 4: Create final RFM table with RFM_SCORE and RFM_LEVEL classification
+Before diving into modeling, it's essential to explore the raw dataset
+**Dataset Overview**
+- **Size**: 2,823 rows × 25 columns
+- **Structure**: Includes order info, product pricing, customer details, and geographic metadata
+
+**Key Exploration Findings**
+
+| Aspect              | Observation                                                                 |
+|---------------------|------------------------------------------------------------------------------|
+| **Data Types**      | Dates stored as text, numeric columns are mixed with string formatting       |
+| **Missing Values**  | Lots of missing values in `POSTALCODE`, some missing `STATE`, `TERRITORY`         |
+| **Revenue Issues**  | Column `SALES` had discrepancies when re-calculated from `PRICEEACH * QUANTITYORDERED` |
+| **Duplicates**      | Checked via `ORDERNUMBER + PRODUCTCODE` → No exact duplicates found          |
+| **Irrelevant Fields** | Columns like `PHONE`, `ADDRESSLINE2`, `CONTACTNAME` not used in RFM analysis  |
+| **Geographic Data** | Some columns present but not useful for customer behavior segmentation       |
+
+**Initial Distributions**
+- Most orders are concentrated in a few frequent buyers
+- Many customers made only 1–2 purchases
+- High variance in monetary value across transactions
+
+This exploration guided our decisions in the cleaning stage and ensured the focus remained on columns relevant to customer-level behavior modeling.
+
+# 2. **Data Cleaning & Preparation (Excel)**  
+**Objective**
+- Clean and standardize raw Kaggle dataset
+- Identify and resolve revenue inconsistencies
+- Remove columns not serving behavioral analysis
+- Prepare dataset for SQL-based segmentation
+
+---
+**Detecting Data Issues**
+
+Upon initial inspection, the dataset contained a `SALES` column, representing line-level revenue. However, when we validated it against the actual logic:
+
+```
+ACTUAL_SALES = PRICEEACH * QUANTITYORDERED
 ```
 
-**✅ Data Quality Tests**  
-- RFM results aligned with total revenue  
-- No null values in critical columns like CUSTOMERNAME, RFM_LEVEL
+-> The values did not consistently match, indicating data quality issues.
 
-**📊 Visualization Highlights**  
-- Power BI dashboard with responsive design  
-- KPI summary on top, segmentation and detailed tables below  
-- Conditional formatting and slicers enhance interactivity
+**Decision**: Discarded the unreliable `SALES` column and created a new, trusted column `ACTUAL_SALES` to ensure accurate analysis.
 
-**📈 Results & DAX Measures**  
-- `Total Customers = DISTINCTCOUNT(CUSTOMERNAME)`  
-- `Total Revenue = SUM(Monetary)`  
-- `VIP Customers = COUNTROWS(FILTER(...))`  
-- `Top Customer = CALCULATE(MAX(Monetary))`
+---
+**Dropping Irrelevant Columns**
 
-**🔎 Analysis & Findings**  
-- VIPs represent only 11% but contribute over 27% of total revenue  
-- 41% of customers are classified as At Risk or Lost  
-- Big Spenders show high value but low frequency → high potential for nurturing
+Out of 25 columns in the original dataset, only around 8–9 were required for RFM analysis. We removed the following:
 
-**📌 Recommendations**  
-- **VIPs**: Exclusive treatment, personalized loyalty programs  
-- **Big Spenders**: Cross-sell, up-sell campaigns, periodic incentives  
-- **At Risk**: Reminder emails, comeback offers  
-- **Lost**: Aggressive remarketing and win-back vouchers  
-- **Potential Loyalists**: Strengthen ties with loyalty schemes
+| Category            | Columns Removed                                   | Reason                                  |
+|---------------------|---------------------------------------------------|-----------------------------------------|
+| Contact & Address   | PHONE, ADDRESSLINE1, ADDRESSLINE2, CITY, STATE, COUNTRY | Not relevant to behavior analysis       |
+| Personal Info       | CONTACTFIRSTNAME, CONTACTLASTNAME                | Redundant with CUSTOMERNAME             |
+| Order Management    | STATUS, ORDERLINENUMBER, QTR_ID, MONTH_ID, YEAR_ID | Duplicates ORDERDATE or metadata        |
+| Product Segments    | PRODUCTLINE, MSRP, DEALSIZE, TERRITORY           | Not required for customer-level RFM     |
 
-**📚 Potential Actions**  
-- Add clustering for deeper segmentation of "Others" group  
-- Automate customer journeys using email workflows  
-- Align marketing campaigns with RFM tiers
+- Key Columns Used in This Project:
+| Column         | Description                                      |
+|----------------|--------------------------------------------------|
+| ORDERNUMBER    | Unique identifier for each order                 |
+| ORDERDATE      | Date of the transaction                          |
+| CUSTOMERNAME   | Name of the customer                             |
+| PRICEEACH      | Price per item                                   |
+| QUANTITYORDERED| Number of items ordered                          |
+| SALES          | System-generated sales field (later replaced)   |
+| ACTUAL_SALES   | Calculated as `PRICEEACH * QUANTITYORDERED`     |
+| POSTALCODE     | Used for potential geographic analysis           |
+| PRODUCTCODE    | Used to check for duplicates within transactions |
 
-**✅ Conclusion**  
-This project demonstrates a full-cycle data analytics process: data cleaning, SQL-based analysis, business insight discovery, and compelling dashboard creation. RFM modeling proves effective in guiding customer relationship strategies and can be adapted for any CRM or e-commerce platform.
+---
 
-**📊 Power BI Dashboard Design:**
+** Processing Steps in Excel**
 
-This dashboard was built in **Sales_project.pbix**, reflecting a customer segmentation approach using the RFM model. The key visuals and layout include:
+| Step | Action                              | Description |
+|------|-------------------------------------|-------------|
+| 1    | Created `ACTUAL_SALES`              | Formula: `=PRICEEACH * QUANTITYORDERED`, rounded to 2 decimals |
+| 2    | Standardized `ORDERDATE`            | Converted to format `yyyy-mm-dd` |
+| 3    | Dropped unnecessary columns         | As listed above |
+| 4    | Handled missing `POSTALCODE`        | Filled using other rows with same `CUSTOMERNAME` |
+| 5    | Checked for duplicate orders        | Used helper column: `ORDERNUMBER & PRODUCTCODE`, then COUNTIFS() |
+| 6    | Sorted data by `ORDERDATE`          | For Recency calculation validation |
+| 7    | Exported cleaned dataset            | Saved as `sales_data_cleaned.csv` for SQL analysis |
 
-- **KPI Cards**: Displaying Total Revenue, Total Customers, VIP Customers, and Lost Customers
-- **Pie Chart**: Shows customer segmentation by `RFM_LEVEL`
-- **Bar Charts**: Distribution of scores for Recency, Frequency, and Monetary
-- **Table**: Top 10 high-value customers sorted by spending
-- **Slicer Panel**: Allows filtering by RFM Level or individual scores
-- **Conditional Formatting**: Highlights high-spending customers and RFM dynamics
-- **Layout**: Horizontally grouped insights for score distribution, customer segments, and detailed breakdown
+---
 
-The visual styling was intentionally kept clean and professional, with intuitive color coding for groups like VIP, At Risk, and Big Spenders.
+**Output**
 
-📁 File: `Sales_project.pbix`
+- Clean, complete, and analysis-ready dataset
+- Verified revenue field (`ACTUAL_SALES`)
+- Trusted input for all downstream SQL and visualization tasks
