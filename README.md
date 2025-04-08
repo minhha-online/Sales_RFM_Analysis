@@ -316,23 +316,23 @@ After preparing the `rfm_results` table in SQL, exported it as a `.csv` and load
 
 ## DAX Measures Created
 
-**Total Customers Measure**
+**1. Total Customers Measure**
 ```DAX
 Total Customers = DISTINCTCOUNT(rfm_results[CUSTOMERNAME])
 ```
-**Total Revenue Measure**
+**2. Total Revenue Measure**
 ```DAX
 Total Revenue = SUM(rfm_results[Monetary])
 ```
-**VIP Customers Measure**
+**3. VIP Customers Measure**
 ```DAX
 VIP CUSTOMER = CALCULATE(DISTINCTCOUNT(rfm_results[CUSTOMERNAME]), rfm_results[RFM_LEVEL] = "VIP")
 ```
-**AtRisk - Lost Customers Measure**
+**4. AtRisk - Lost Customers Measure**
 ```DAX
 AtRisk - loss = CALCULATE(DISTINCTCOUNT(rfm_results[CUSTOMERNAME]),rfm_results[RFM_LEVEL] IN {"At risk", "Lost"})
 ```
-**Top Customer Measure**	
+**5. Top Customer Measure**	
 ```DAX
 Top Customer Name = 
 CALCULATE(
