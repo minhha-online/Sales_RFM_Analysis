@@ -117,7 +117,7 @@ Before diving into modeling, it's essential to explore the raw dataset
 
 This exploration guided our decisions in the cleaning stage and ensured the focus remained on columns relevant to customer-level behavior modeling.
 
-# Data Cleaning & Preparation (Excel)  
+# Data Cleaning & Preparation  
 
 ## Objective
 - Clean and standardize raw Kaggle dataset
