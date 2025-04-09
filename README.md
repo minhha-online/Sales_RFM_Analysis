@@ -125,7 +125,6 @@ This exploration guided our decisions in the cleaning stage and ensured the focu
 - Remove columns not serving behavioral analysis
 - Prepare dataset for SQL-based segmentation
 
----
 ## Detecting Data Issues
 
 Upon initial inspection, the dataset contained a `SALES` column, representing line-level revenue. However, when we validated it against the actual logic:
@@ -138,7 +137,6 @@ ACTUAL_SALES = PRICEEACH * QUANTITYORDERED
 
 **Decision**: Discarded the unreliable `SALES` column and created a new, trusted column `ACTUAL_SALES` to ensure accurate analysis.
 
----
 
 ## Dropping Irrelevant Columns
 
@@ -164,8 +162,6 @@ Key Columns Used in This Project:
 | POSTALCODE     | Used for potential geographic analysis           |
 | PRODUCTCODE    | Used to check for duplicates within transactions |
 
----
-
 ## Processing Steps in Excel
 
 | Step | Action                              | Description |
@@ -177,8 +173,6 @@ Key Columns Used in This Project:
 | 5    | Checked for duplicate orders        | Used helper column: `ORDERNUMBER & PRODUCTCODE`, then COUNTIFS() |
 | 6    | Sorted data by `ORDERDATE`          | For Recency calculation validation |
 | 7    | Exported cleaned dataset            | Saved as `sales_data_cleaned.csv` for SQL analysis |
-
----
 
 ## Output
 
@@ -195,7 +189,6 @@ To group customers based on their behavior using three core metrics:
 - **Frequency**: How often they purchased
 - **Monetary**: How much they spent
 
----
 
 ## Key Steps
 
@@ -283,8 +276,6 @@ WITH rfm_base AS (
 SELECT * INTO rfm_results FROM rfm_final;
 ```
 
----
-
 ## Output
 - Table `rfm_results` contains:
   - RFM metrics and scores
@@ -300,15 +291,12 @@ This structured output feeds directly into Power BI for interactive analysis.
 # Power BI Dashboard Development  
 After preparing the `rfm_results` table in SQL, exported it as a `.csv` and loaded it into Power BI to design an interactive dashboard. This dashboard enables clear customer segmentation and supports business decision-making.
 
----
-
 ## Objective
 
 - Visualize RFM scores and levels to understand customer behavior
 - Track key metrics (revenue, VIPs, customer distribution)
 - Enable filtering and slicing for deeper insight exploration
 
----
 
 ## Visualization Results
 
@@ -343,7 +331,6 @@ CALCULATE(
 
 These measures were used in KPI Cards and visual breakdowns.
 
----
 
 ## Dashboard Components
 
@@ -355,8 +342,6 @@ These measures were used in KPI Cards and visual breakdowns.
 | Table             | Matrix Table   | Top customers with RFM_SCORE and Monetary       |
 | Slicers           | Filter widgets | Filter dashboard by RFM_LEVEL and RFM_SCORE     |
 
----
-
 **Visual Design Considerations**
 
 - Color-coded RFM levels for better segmentation visibility
@@ -364,14 +349,12 @@ These measures were used in KPI Cards and visual breakdowns.
 - Slicers placed at top-right for quick filtering
 - Grouped visuals for comparative storytelling (e.g., Score charts side-by-side)
 
----
 
 **Dashboard Layout**
 
 - Header row: KPI Cards
 - Middle row: Pie chart + Score Bar Charts
 - Bottom row: Detailed Table with slicers
----
 
 **Outcome**
 
